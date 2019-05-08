@@ -30,11 +30,11 @@
 
         </select>
         <input type="text" v-model="newTodo" @keyup.enter="addTodo">
-        <li v-for="todo,index in todosByStatus()" v-bind:class="{completed: todo.completed}" v-bind:key="todo.id">
+        <li v-for="todo in todosByStatus()" v-bind:class="{completed: todo.completed}" v-bind:key="todo.id">
             <input type="checkbox" v-model="todo.completed" @change="updateTodo(todo)">
             {{todo.content}}
             
-            <button v-if="todo.completed" v-on:click="deleteTodo(index)">삭제버튼</button>
+            <button v-if="todo.completed" v-on:click="deleteTodo(todo)">삭제버튼</button>
         </li>
     </div>
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -66,9 +66,8 @@
                         {id:Date.now(), content:this.newTodo,completed:false}
                     )
                 },
-                deleteTodo:function(index){
-                    
-                    this.todos.splice(index,1)
+                deleteTodo:function(todo){
+                    this.$firebaseRefs.todos.child(todo['.key']).remove()
                 },
                 todosByStatus:function(){
                     if(this.status =="active"){
